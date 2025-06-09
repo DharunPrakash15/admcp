@@ -1,31 +1,22 @@
+// C:\Users\hemachandiran.r\AppData\Local\MCPApp\backend\modules\admcp\server.js
+const express = require("express");
+const path = require("path");
+const authControllerAD = require("./authControllerAD");
 
-import express from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+const router = express.Router();
 
-export default function exportAdMcpRouter(app) {
+router.get("/hello", (req, res) => {
+  res.send("Hello from ADMCP!");
+});
 
-    // Sample route handler
-    const adMcpRouter = express.Router();
+router.use(express.static(path.join(__dirname, "../../../frontend/app/admcp/dist")));
 
-    // Resolve __dirname
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+router.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../../../frontend/app/admcp/dist/", "index.html"));
+});
 
-    // Serve frontend from Program Files folder
-    adMcpRouter.use(express.static(path.join(__dirname, "../../../frontend/app/admcp/dist")));
-
-    adMcpRouter.get("/", (req, res) => {
-        res.sendFile(path.join(__dirname, "../../../frontend/app/admcp/dist/index.html"));
-    });
+router.get("/login", authControllerAD.login);
 
 
-    adMcpRouter.get("/status", (req, res) => {
-        res.json({ module: "AD MCP Module", status: "running" });
-    });
 
-
-    app.use("/admcp", adMcpRouter);
-
-}
+module.exports = router;
